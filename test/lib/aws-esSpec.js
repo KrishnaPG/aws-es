@@ -1208,6 +1208,34 @@ describe('aws-es', function() {
         });
     });
 
+	describe('mappings', function() {
+		it('puts a mapping and retrieves it', function(done) {
+			elasticsearch.putMapping({
+				index: INDEX,
+				type: TYPE,
+				body: {
+					properties: {
+						new_property: {
+							type: 'string'
+						}
+					}
+				}
+			}, function(err, data) {
+				expect(err).to.be.null;
+				expect(data.acknowledged).equal(true);
+				elasticsearch.getMapping({
+					index: INDEX,
+					type: TYPE
+				}, function(err, data) {
+					expect(err).to.be.null;
+					expect(data[INDEX].mappings[TYPE].properties.new_property)
+						.deep.equal({type: 'string'});
+					done();
+				});
+			});
+		});
+	});
+
 	describe('delete', function() {
 
         it('should throw an error for no callback', function() {
