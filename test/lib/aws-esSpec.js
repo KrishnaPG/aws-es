@@ -3,11 +3,11 @@ var is = require('is_js');
 var AWSES = require(__dirname + '/../../lib/aws-es');
 
 var config = {
-	accessKeyId: 'KEY',
-	secretAccessKey: 'SECRET',
+	accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+	secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     service: 'es',
-    region: 'REGION',
-	host: 'DOMAIN_ENDPOINT'
+    region: 'us-west-2',
+	host: 'search-dave-6jy2cskdfaye4ji6gfa6x375ve.us-west-2.es.amazonaws.com'
 };
 var INDEX = 'testindex';
 var TYPE = 'posts';
