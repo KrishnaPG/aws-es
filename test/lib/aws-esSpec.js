@@ -222,6 +222,42 @@ describe('aws-es', function() {
         });
     });
 
+	describe('createIndex', function() {
+		var index = 'test_create_index_index';
+		after(function(done) {
+			elasticsearch.delete({
+				index: index
+			}, done);
+		});
+
+		it('creates an index with a mapping', function(done) {
+			var mapping = {
+				mappings: {
+					bananas: {
+						properties: {
+							pajamas: {
+								type: 'string',
+								index: 'not_analyzed'
+							}
+						}
+					}
+				}
+			};
+			elasticsearch.createIndex({
+				name: index,
+				body: mapping
+			}, function(err, data) {
+				elasticsearch.getMapping({
+					index: index,
+					type: ''
+				}, function(err, data) {
+					expect(data[index]).deep.equal(mapping)
+					done();
+				});
+			});
+		});
+	});
+
     describe('count', function() {
 
         it('should throw an error for no callback', function() {
