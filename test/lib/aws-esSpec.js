@@ -3,11 +3,11 @@ var is = require('is_js');
 var AWSES = require(__dirname + '/../../lib/aws-es');
 
 var config = {
-	accessKeyId: 'KEY',
-	secretAccessKey: 'SECRET',
+	accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+	secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     service: 'es',
-    region: 'REGION',
-	host: 'DOMAIN_ENDPOINT'
+    region: 'us-west-2',
+	host: 'search-dave-6jy2cskdfaye4ji6gfa6x375ve.us-west-2.es.amazonaws.com'
 };
 var INDEX = 'testindex';
 var TYPE = 'posts';
@@ -221,6 +221,42 @@ describe('aws-es', function() {
             });
         });
     });
+
+	describe('createIndex', function() {
+		var index = 'test_create_index_index';
+		after(function(done) {
+			elasticsearch.delete({
+				index: index
+			}, done);
+		});
+
+		it('creates an index with a mapping', function(done) {
+			var mapping = {
+				mappings: {
+					bananas: {
+						properties: {
+							pajamas: {
+								type: 'string',
+								index: 'not_analyzed'
+							}
+						}
+					}
+				}
+			};
+			elasticsearch.createIndex({
+				name: index,
+				body: mapping
+			}, function(err, data) {
+				elasticsearch.getMapping({
+					index: index,
+					type: ''
+				}, function(err, data) {
+					expect(data[index]).deep.equal(mapping)
+					done();
+				});
+			});
+		});
+	});
 
     describe('count', function() {
 
@@ -1207,6 +1243,34 @@ describe('aws-es', function() {
             });
         });
     });
+
+	describe('mappings', function() {
+		it('puts a mapping and retrieves it', function(done) {
+			elasticsearch.putMapping({
+				index: INDEX,
+				type: TYPE,
+				body: {
+					properties: {
+						new_property: {
+							type: 'string'
+						}
+					}
+				}
+			}, function(err, data) {
+				expect(err).to.be.null;
+				expect(data.acknowledged).equal(true);
+				elasticsearch.getMapping({
+					index: INDEX,
+					type: TYPE
+				}, function(err, data) {
+					expect(err).to.be.null;
+					expect(data[INDEX].mappings[TYPE].properties.new_property)
+						.deep.equal({type: 'string'});
+					done();
+				});
+			});
+		});
+	});
 
 	describe('delete', function() {
 
