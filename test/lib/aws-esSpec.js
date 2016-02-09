@@ -251,8 +251,18 @@ describe('aws-es', function() {
 					index: index,
 					type: ''
 				}, function(err, data) {
-					expect(data[index]).deep.equal(mapping)
-					done();
+					expect(data[index]).deep.equal(mapping);
+					elasticsearch.indexExists({
+						index: index
+					}, function(err, data) {
+						expect(data).equal(true);
+						elasticsearch.indexExists({
+							index: 'bananas'
+						}, function(err, data) {
+							expect(data).equals(false);
+							done();
+						});
+					});
 				});
 			});
 		});
