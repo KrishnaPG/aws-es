@@ -244,7 +244,7 @@ describe('aws-es', function() {
 				}
 			};
 			elasticsearch.createIndex({
-				name: index,
+				index: index,
 				body: mapping
 			}, function(err, data) {
 				elasticsearch.getMapping({
