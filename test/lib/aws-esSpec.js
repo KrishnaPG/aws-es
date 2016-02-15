@@ -411,6 +411,7 @@ describe('aws-es', function() {
             elasticsearch.index({
 				index: INDEX,
 				type: TYPE,
+				body: {},
 				id: 1
 			}, function(err, data) {
                 expect(err).to.be.equal('invalid_id');
@@ -513,6 +514,7 @@ describe('aws-es', function() {
 		it('should return an error for no id', function() {
             elasticsearch.update({
 				index: INDEX,
+				body: {},
 				type: TYPE
 			}, function(err, data) {
                 expect(err).to.be.equal('not_id');
@@ -523,6 +525,7 @@ describe('aws-es', function() {
             elasticsearch.update({
 				index: INDEX,
 				type: TYPE,
+				body: {},
 				id: 1
 			}, function(err, data) {
                 expect(err).to.be.equal('invalid_id');
