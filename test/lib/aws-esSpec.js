@@ -266,6 +266,43 @@ describe('aws-es', function() {
 				});
 			});
 		});
+
+		it('creates an index with a mapping using .indices', function(done) {
+			var mapping = {
+				mappings: {
+					bananas: {
+						properties: {
+							pajamas: {
+								type: 'string',
+								index: 'not_analyzed'
+							}
+						}
+					}
+				}
+			};
+			elasticsearch.indices.create({
+				index: index,
+				body: mapping
+			}, function(err, data) {
+				elasticsearch.indices.getMapping({
+					index: index,
+					type: ''
+				}, function(err, data) {
+					expect(data[index]).deep.equal(mapping);
+					elasticsearch.indices.exists({
+						index: index
+					}, function(err, data) {
+						expect(data).equal(true);
+						elasticsearch.indices.exists({
+							index: 'bananas'
+						}, function(err, data) {
+							expect(data).equals(false);
+							done();
+						});
+					});
+				});
+			});
+		});
 	});
 
     describe('count', function() {
