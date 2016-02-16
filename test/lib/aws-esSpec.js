@@ -266,6 +266,43 @@ describe('aws-es', function() {
 				});
 			});
 		});
+
+		it('creates an index with a mapping using .indices', function(done) {
+			var mapping = {
+				mappings: {
+					bananas: {
+						properties: {
+							pajamas: {
+								type: 'string',
+								index: 'not_analyzed'
+							}
+						}
+					}
+				}
+			};
+			elasticsearch.indices.create({
+				index: index,
+				body: mapping
+			}, function(err, data) {
+				elasticsearch.indices.getMapping({
+					index: index,
+					type: ''
+				}, function(err, data) {
+					expect(data[index]).deep.equal(mapping);
+					elasticsearch.indices.exists({
+						index: index
+					}, function(err, data) {
+						expect(data).equal(true);
+						elasticsearch.indices.exists({
+							index: 'bananas'
+						}, function(err, data) {
+							expect(data).equals(false);
+							done();
+						});
+					});
+				});
+			});
+		});
 	});
 
     describe('count', function() {
@@ -411,6 +448,7 @@ describe('aws-es', function() {
             elasticsearch.index({
 				index: INDEX,
 				type: TYPE,
+				body: {},
 				id: 1
 			}, function(err, data) {
                 expect(err).to.be.equal('invalid_id');
@@ -513,6 +551,7 @@ describe('aws-es', function() {
 		it('should return an error for no id', function() {
             elasticsearch.update({
 				index: INDEX,
+				body: {},
 				type: TYPE
 			}, function(err, data) {
                 expect(err).to.be.equal('not_id');
@@ -523,6 +562,7 @@ describe('aws-es', function() {
             elasticsearch.update({
 				index: INDEX,
 				type: TYPE,
+				body: {},
 				id: 1
 			}, function(err, data) {
                 expect(err).to.be.equal('invalid_id');
