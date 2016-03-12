@@ -796,6 +796,23 @@ describe('aws-es', function() {
             });
         });
 
+		it('should return nothing for a nonexistent index', function(done) {
+			elasticsearch.search({
+				index: 'bananas',
+				type: TYPE,
+				ignoreUnavailable: true,
+				body: {
+					query: {
+						match_all: {}
+					}
+				}
+			}, function(err, data) {
+                expect(err).to.be.null;
+				expect(data.hits.hits).deep.equal([]);
+				done();
+            });
+		});
+
 		it('should return an error for invalid size', function(done) {
 			this.timeout(20000);
 
