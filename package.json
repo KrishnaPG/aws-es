@@ -1,6 +1,6 @@
 {
   "name": "aws-es2",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A Node.js binding for Amazon's Elasticsearch service which requires Amazon's Signature Version 4. Started as a fork from https://github.com/crowdanalyzer/aws-es",
   "main": "./lib/aws-es.js",
   "scripts": {
